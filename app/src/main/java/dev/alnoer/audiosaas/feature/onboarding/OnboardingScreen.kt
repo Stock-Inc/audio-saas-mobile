@@ -27,19 +27,19 @@ import kotlinx.coroutines.launch
 
 private val OnboardingPages = listOf(
     AudioOnboardingPage(
-        title = "Добро\nпожаловать в SaaS",
+        title = "Добро пожаловать в SaaS",
         description = "Превращайте разговоры и встречи в понятный текст без ручной расшифровки.",
         summary = "Теперь с поиском!",
     ),
     AudioOnboardingPage(
         title = "Точная расшифровка",
         description = "SaaS определит спикеров, добавит таймкоды и сохранит каждую запись в истории.",
-        summary = "СПИКЕРЫ · ТАЙМКОДЫ · ИСТОРИЯ",
+        summary = "С спикерами, таймкодами и историей",
     ),
     AudioOnboardingPage(
         title = "Коротко о главном",
         description = "AI выделит ключевые мысли, решения и следующие шаги без лишнего шума.",
-        summary = "СВОДКА · РЕШЕНИЯ · ДЕЙСТВИЯ",
+        summary = "Модель на выбор",
     ),
 )
 
