@@ -4,18 +4,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.alnoer.audiosaas.core.designsystem.component.AudioButton
@@ -27,6 +30,7 @@ import dev.alnoer.audiosaas.core.designsystem.component.AudioMainScaffold
 import dev.alnoer.audiosaas.core.designsystem.component.AudioPageTitle
 import dev.alnoer.audiosaas.core.designsystem.component.AudioRecordingRow
 import dev.alnoer.audiosaas.feature.recordings.SampleRecordings
+import dev.alnoer.audiosaas.ui.theme.AudioSaaSTheme
 import dev.alnoer.audiosaas.ui.theme.Newsreader
 import dev.alnoer.audiosaas.ui.theme.audioColors
 
@@ -71,7 +75,7 @@ fun OverviewScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 SectionLabel("НЕДАВНИЕ ЗАПИСИ")
-                androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
                 Text(
                     text = "ВСЕ ЗАПИСИ",
                     color = MaterialTheme.colorScheme.primary,
@@ -97,21 +101,18 @@ fun OverviewScreen(
 
 @Composable
 private fun MonthlySummary() {
-    AudioCard(modifier = Modifier.height(126.dp)) {
+    AudioCard {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(14.dp),
+            modifier = Modifier.padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             SectionLabel("ЭТОТ МЕСЯЦ")
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Metric(label = "ОБРАБОТАНО", value = "42,8 ч", modifier = Modifier.weight(1f))
+                Metric(label = "ОБРАБОТАНО", value = "42,8 h", modifier = Modifier.weight(1f))
                 Metric(label = "ЗАПИСЕЙ", value = "128", modifier = Modifier.weight(1f))
             }
         }
@@ -129,6 +130,7 @@ private fun Metric(
         verticalArrangement = Arrangement.Center,
     ) {
         SectionLabel(label)
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = value,
             color = MaterialTheme.colorScheme.onBackground,
@@ -151,4 +153,19 @@ private fun SectionLabel(text: String) {
             fontWeight = FontWeight.Medium,
         ),
     )
+}
+
+@PreviewScreenSizes
+@Composable
+private fun OverviewScreenPreview() {
+    AudioSaaSTheme {
+        Surface {
+            OverviewScreen(
+                onDestinationSelected = {},
+                onRecordingSelected = {},
+                onNewRecording = {},
+                onViewAll = {},
+            )
+        }
+    }
 }
