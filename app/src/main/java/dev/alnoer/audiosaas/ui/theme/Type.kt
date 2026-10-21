@@ -49,10 +49,10 @@ val AudioTypography = Typography(
         lineHeight = 32.sp,
     ),
     bodyLarge = TextStyle(
-        fontFamily = IbmPlexMono,
+        fontFamily = Newsreader,
         fontWeight = FontWeight.Normal,
-        fontSize = 13.sp,
-        lineHeight = 20.sp,
+        fontSize = 18.sp,
+        lineHeight = 26.sp,
     ),
     bodyMedium = TextStyle(
         fontFamily = IbmPlexMono,

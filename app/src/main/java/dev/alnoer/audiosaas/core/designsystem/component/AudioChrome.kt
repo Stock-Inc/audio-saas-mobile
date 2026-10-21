@@ -11,18 +11,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.alnoer.audiosaas.ui.theme.AudioSaaSTheme
 import dev.alnoer.audiosaas.ui.theme.audioColors
 
 @Composable
@@ -56,7 +60,7 @@ fun AudioTopBar(
             AudioIcon(
                 asset = AudioIconAsset.SaasMark,
                 contentDescription = null,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(20.dp),
                 tint = MaterialTheme.colorScheme.primary,
             )
             Spacer(Modifier.width(10.dp))
@@ -64,7 +68,8 @@ fun AudioTopBar(
         Text(
             text = title,
             color = MaterialTheme.audioColors.sidebarForeground,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.offset(y = 2.dp)
         )
         Spacer(Modifier.weight(1f))
         action?.invoke()
@@ -111,7 +116,7 @@ fun AudioBottomNavigation(
             } else {
                 MaterialTheme.audioColors.mutedForeground
             }
-            androidx.compose.foundation.layout.Column(
+            Column(
                 modifier = Modifier
                     .width(90.dp)
                     .height(40.dp)
@@ -208,5 +213,15 @@ fun AudioPageTitle(
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineMedium,
         )
+    }
+}
+
+@Preview
+@Composable
+private fun AudioTopBarPreview() {
+    AudioSaaSTheme {
+        Surface {
+            AudioTopBar()
+        }
     }
 }
