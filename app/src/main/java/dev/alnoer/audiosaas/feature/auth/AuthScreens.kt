@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import dev.alnoer.audiosaas.core.designsystem.component.AudioAuthCard
 import dev.alnoer.audiosaas.core.designsystem.component.AudioAuthSwitch
@@ -31,6 +32,7 @@ import dev.alnoer.audiosaas.core.designsystem.component.AudioButton
 import dev.alnoer.audiosaas.core.designsystem.component.AudioCheckbox
 import dev.alnoer.audiosaas.core.designsystem.component.AudioTextField
 import dev.alnoer.audiosaas.core.designsystem.component.AudioTopBar
+import dev.alnoer.audiosaas.ui.theme.AudioSaaSTheme
 import dev.alnoer.audiosaas.ui.theme.audioColors
 
 @Composable
@@ -188,6 +190,32 @@ fun SignUpScreen(
                     onAction = onSignIn,
                 )
             }
+        }
+    }
+}
+
+@PreviewScreenSizes
+@Composable
+private fun SignInScreenPreview() {
+    AudioSaaSTheme {
+        Surface {
+            SignInScreen(
+                onSignIn = {},
+                onCreateAccount = {},
+            )
+        }
+    }
+}
+
+@PreviewScreenSizes
+@Composable
+private fun SignUpScreenPreview() {
+    AudioSaaSTheme {
+        Surface {
+            SignUpScreen(
+                onCreateAccount = {},
+                onSignIn = {},
+            )
         }
     }
 }

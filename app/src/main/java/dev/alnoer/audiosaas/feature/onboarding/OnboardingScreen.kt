@@ -1,10 +1,10 @@
 package dev.alnoer.audiosaas.feature.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import dev.alnoer.audiosaas.core.designsystem.component.AudioButton
 import dev.alnoer.audiosaas.core.designsystem.component.AudioOnboardingCard
@@ -24,6 +26,7 @@ import dev.alnoer.audiosaas.core.designsystem.component.AudioOnboardingPage
 import dev.alnoer.audiosaas.core.designsystem.component.AudioPagerIndicator
 import dev.alnoer.audiosaas.core.designsystem.component.AudioTextAction
 import dev.alnoer.audiosaas.core.designsystem.component.AudioTopBar
+import dev.alnoer.audiosaas.ui.theme.AudioSaaSTheme
 import kotlinx.coroutines.launch
 
 private val OnboardingPages = listOf(
@@ -75,7 +78,7 @@ fun OnboardingScreen(
                 .weight(1f)
                 .fillMaxWidth(),
         ) {
-            androidx.compose.foundation.layout.Spacer(Modifier.height(86.dp))
+            Spacer(Modifier.height(86.dp))
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
@@ -91,7 +94,7 @@ fun OnboardingScreen(
                     selected = page == pagerState.currentPage,
                 )
             }
-            androidx.compose.foundation.layout.Spacer(Modifier.height(30.dp))
+            Spacer(Modifier.height(30.dp))
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center,
@@ -101,7 +104,7 @@ fun OnboardingScreen(
                     selectedPage = pagerState.currentPage,
                 )
             }
-            androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
+            Spacer(Modifier.weight(1f))
             AudioButton(
                 text = if (pagerState.currentPage == OnboardingPages.lastIndex) {
                     "Войти"
@@ -121,7 +124,17 @@ fun OnboardingScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp),
             )
-            androidx.compose.foundation.layout.Spacer(Modifier.height(80.dp))
+            Spacer(Modifier.height(80.dp))
+        }
+    }
+}
+
+@PreviewScreenSizes
+@Composable
+private fun OnboardingScreenPreview() {
+    AudioSaaSTheme {
+        Surface {
+            OnboardingScreen(onFinished = {})
         }
     }
 }

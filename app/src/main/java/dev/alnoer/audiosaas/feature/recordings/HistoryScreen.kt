@@ -3,12 +3,14 @@ package dev.alnoer.audiosaas.feature.recordings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import dev.alnoer.audiosaas.core.designsystem.component.AudioButton
 import dev.alnoer.audiosaas.core.designsystem.component.AudioDestination
@@ -29,6 +32,7 @@ import dev.alnoer.audiosaas.core.designsystem.component.AudioMainScaffold
 import dev.alnoer.audiosaas.core.designsystem.component.AudioPageTitle
 import dev.alnoer.audiosaas.core.designsystem.component.AudioRecordingRow
 import dev.alnoer.audiosaas.core.designsystem.component.AudioTextField
+import dev.alnoer.audiosaas.ui.theme.AudioSaaSTheme
 import dev.alnoer.audiosaas.ui.theme.audioColors
 
 @Composable
@@ -98,13 +102,13 @@ fun HistoryScreen(
                         fontWeight = FontWeight.Medium,
                     ),
                 )
-                androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
                 Text(
                     text = "Сначала новые",
                     color = MaterialTheme.audioColors.mutedForeground,
                     style = MaterialTheme.typography.bodySmall,
                 )
-                androidx.compose.foundation.layout.Spacer(Modifier.size(6.dp))
+                Spacer(Modifier.size(6.dp))
                 AudioIcon(
                     asset = AudioIconAsset.SortDescending,
                     contentDescription = "Сортировка: сначала новые",
@@ -122,6 +126,20 @@ fun HistoryScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+@PreviewScreenSizes
+@Composable
+private fun HistoryScreenPreview() {
+    AudioSaaSTheme {
+        Surface {
+            HistoryScreen(
+                onDestinationSelected = {},
+                onRecordingSelected = {},
+                onNewRecording = {},
+            )
         }
     }
 }

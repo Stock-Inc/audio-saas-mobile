@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.alnoer.audiosaas.core.designsystem.component.AudioBadge
@@ -37,6 +39,7 @@ import dev.alnoer.audiosaas.core.designsystem.component.AudioPlayer
 import dev.alnoer.audiosaas.core.designsystem.component.AudioSummaryCard
 import dev.alnoer.audiosaas.core.designsystem.component.AudioTopBar
 import dev.alnoer.audiosaas.core.designsystem.component.AudioTranscriptExcerpt
+import dev.alnoer.audiosaas.ui.theme.AudioSaaSTheme
 import dev.alnoer.audiosaas.ui.theme.audioColors
 
 @Composable
@@ -172,6 +175,16 @@ fun ResultScreen(
                     tint = MaterialTheme.colorScheme.onSecondary,
                 )
             }
+        }
+    }
+}
+
+@PreviewScreenSizes
+@Composable
+private fun ResultScreenPreview() {
+    AudioSaaSTheme {
+        Surface {
+            ResultScreen(onBack = {})
         }
     }
 }
