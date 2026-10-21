@@ -1,5 +1,6 @@
 package dev.alnoer.audiosaas.feature.onboarding
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,16 +55,18 @@ fun OnboardingScreen(
     Column(modifier = modifier.fillMaxSize()) {
         AudioTopBar(
             action = {
-                Box(
-                    modifier = Modifier
-                        .width(116.dp)
-                        .height(36.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    AudioTextAction(
-                        text = "Пропустить",
-                        onClick = onFinished,
-                    )
+                AnimatedVisibility(pagerState.currentPage != OnboardingPages.lastIndex) {
+                    Box(
+                        modifier = Modifier
+                            .width(116.dp)
+                            .height(36.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        AudioTextAction(
+                            text = "Пропустить",
+                            onClick = onFinished,
+                        )
+                    }
                 }
             },
         )
