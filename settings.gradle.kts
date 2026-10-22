@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google {
@@ -23,4 +25,11 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Audio SaaS"
+
 include(":app")
+include(":core:designsystem")
+include(":feature:auth")
+include(":feature:folders")
+include(":feature:home")
+include(":feature:onboarding")
+include(":feature:recordings")

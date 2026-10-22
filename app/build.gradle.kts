@@ -37,6 +37,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "Audio SaaS Debug")
         }
         release {
             signingConfig = signingConfigs.getByName("release")
@@ -51,19 +52,23 @@ android {
     }
     buildFeatures {
         compose = true
+        resValues = true
     }
 }
 
 dependencies {
+    implementation(project(":core:designsystem"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:folders"))
+    implementation(project(":feature:home"))
+    implementation(project(":feature:onboarding"))
+    implementation(project(":feature:recordings"))
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)

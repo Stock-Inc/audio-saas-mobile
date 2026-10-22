@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import dev.alnoer.audiosaas.ui.theme.AudioSaaSTheme
+import dev.alnoer.audiosaas.core.designsystem.theme.AudioSaaSTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
