@@ -107,5 +107,3 @@ internal val DarkAudioColors = AudioColors(
 )
 
 internal val LocalAudioColors = staticCompositionLocalOf { DarkAudioColors }
-
-

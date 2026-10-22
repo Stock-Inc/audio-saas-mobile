@@ -34,5 +34,3 @@ fun AudioIcon(
         tint = tint,
     )
 }
-
-

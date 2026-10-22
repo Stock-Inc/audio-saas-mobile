@@ -25,4 +25,3 @@ class AudioSaaSAppTest {
         composeRule.onNodeWithText("Вход").assertIsDisplayed()
     }
 }
-

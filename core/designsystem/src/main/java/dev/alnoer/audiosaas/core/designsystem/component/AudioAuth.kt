@@ -123,5 +123,3 @@ fun AudioAuthSwitch(
         )
     }
 }
-
-
