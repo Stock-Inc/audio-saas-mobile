@@ -16,3 +16,4 @@ local.properties
 *.md
 !README.md
 /.serena
+/app/release
