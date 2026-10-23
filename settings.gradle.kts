@@ -1,11 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":core:local")
-
-
-include(":core:network")
-
-
 pluginManagement {
     repositories {
         google {
@@ -34,6 +28,8 @@ rootProject.name = "Audio SaaS"
 
 include(":app")
 include(":core:designsystem")
+include(":core:local")
+include(":core:network")
 include(":feature:auth")
 include(":feature:folders")
 include(":feature:home")
