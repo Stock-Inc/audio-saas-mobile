@@ -60,8 +60,6 @@ android {
 
 dependencies {
     implementation(project(":core:designsystem"))
-    implementation(project(":core:network"))
-    implementation(project(":core:local"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:folders"))
     implementation(project(":feature:home"))
