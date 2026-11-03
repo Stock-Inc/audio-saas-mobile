@@ -9,7 +9,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.ktor.client.okhttp)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+
+    implementation(libs.ktor.client.okhttp)
 }
