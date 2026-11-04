@@ -33,6 +33,7 @@ import dev.alnoer.audiosaas.feature.preferences.PreferencesViewModel
 import dev.alnoer.audiosaas.feature.recordings.HistoryScreen
 import dev.alnoer.audiosaas.feature.recordings.ResultScreen
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 private object AppRoute {
@@ -85,6 +86,23 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
         )
     }
 
+    LaunchedEffect(isAuthenticated) {
+        if (!isAuthenticated) {
+            val currentRoute = navController.currentBackStackEntryFlow
+                .first()
+                .destination
+                .route
+            if (currentRoute != AppRoute.ONBOARDING) {
+                navController.navigate(AppRoute.ONBOARDING) {
+                    popUpTo(AppRoute.OVERVIEW) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = startupState.startDestination,
@@ -128,8 +146,19 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
                         if (authAvailable) {
                             coroutineScope.launch {
                                 try {
+                                    val loginIntent = authViewModel.getLoginIntent()
+                                    if (loginIntent == null) {
+                                        snackbarHostState.showAudioSnackbar(
+                                            message = "Не удалось начать вход. Попробуйте ещё раз.",
+                                            type = AudioSnackbarType.Error,
+                                            withDismissAction = true,
+                                            duration = SnackbarDuration.Long,
+                                        )
+                                        return@launch
+                                    }
+
                                     preferencesViewModel.setNotFirstTimeLaunch()
-                                    authViewModel.getLoginIntent()?.let(authLauncher::launch)
+                                    authLauncher.launch(loginIntent)
                                 } catch (exception: CancellationException) {
                                     throw exception
                                 } catch (_: Exception) {
@@ -144,7 +173,7 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
                         }
                     },
                     nextButtonEnabled = authAvailable,
-                    showIntroduction = startupState.showIntroduction,
+                    showIntroduction = isFirstTimeLaunch && startupState.showIntroduction,
                     modifier = Modifier,
                 )
                 AudioSnackbarHost(
