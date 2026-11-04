@@ -50,6 +50,7 @@ private val OnboardingPages = listOf(
 @Composable
 fun OnboardingScreen(
     onFinished: () -> Unit,
+    nextButtonEnabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(pageCount = { OnboardingPages.size })
@@ -120,6 +121,7 @@ fun OnboardingScreen(
                         }
                     }
                 },
+                enabled = nextButtonEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp),
@@ -134,7 +136,10 @@ fun OnboardingScreen(
 private fun OnboardingScreenPreview() {
     AudioSaaSTheme {
         Surface {
-            OnboardingScreen(onFinished = {})
+            OnboardingScreen(
+                onFinished = {},
+                nextButtonEnabled = true
+            )
         }
     }
 }
