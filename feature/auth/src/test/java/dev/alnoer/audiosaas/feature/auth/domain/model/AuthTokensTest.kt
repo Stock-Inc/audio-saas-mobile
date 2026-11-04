@@ -1,4 +1,4 @@
-package dev.alnoer.audiosaas.feature.auth
+package dev.alnoer.audiosaas.feature.auth.domain.model
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

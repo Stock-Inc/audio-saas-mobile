@@ -1,10 +1,11 @@
-package dev.alnoer.audiosaas.feature.auth
+package dev.alnoer.audiosaas.feature.auth.data.remote
 
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.alnoer.audiosaas.feature.auth.domain.model.AuthTokens
 import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException

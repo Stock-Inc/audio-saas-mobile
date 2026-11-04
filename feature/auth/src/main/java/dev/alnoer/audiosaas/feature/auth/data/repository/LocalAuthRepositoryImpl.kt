@@ -1,21 +1,17 @@
-package dev.alnoer.audiosaas.feature.auth
+package dev.alnoer.audiosaas.feature.auth.data.repository
 
+import dev.alnoer.audiosaas.feature.auth.domain.model.AuthTokens
+import dev.alnoer.audiosaas.feature.auth.domain.repository.LocalAuthRepository
 import dev.alnoer.audiosaas.local.keyvalue.KeyValueStore
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-interface LocalAuthRepository {
-    val tokens: Flow<AuthTokens?>
-    suspend fun saveTokens(tokens: AuthTokens)
-    suspend fun clearTokens()
-}
-
 @Singleton
 class LocalAuthRepositoryImpl @Inject constructor(
     private val keyValueStore: KeyValueStore,
-): LocalAuthRepository {
+) : LocalAuthRepository {
     override val tokens: Flow<AuthTokens?> =
         keyValueStore.observeStrings(TOKEN_KEYS).map { values ->
             val accessToken = values[ACCESS_TOKEN] ?: return@map null

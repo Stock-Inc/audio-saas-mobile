@@ -23,9 +23,9 @@ import dev.alnoer.audiosaas.core.designsystem.component.AudioDestination
 import dev.alnoer.audiosaas.core.designsystem.component.AudioSnackbarHost
 import dev.alnoer.audiosaas.core.designsystem.component.AudioSnackbarType
 import dev.alnoer.audiosaas.core.designsystem.component.showAudioSnackbar
-import dev.alnoer.audiosaas.feature.auth.AuthSessionViewModel
-import dev.alnoer.audiosaas.feature.auth.AuthState
-import dev.alnoer.audiosaas.feature.auth.AuthViewModel
+import dev.alnoer.audiosaas.feature.auth.domain.model.AuthState
+import dev.alnoer.audiosaas.feature.auth.presentation.AuthSessionViewModel
+import dev.alnoer.audiosaas.feature.auth.presentation.AuthViewModel
 import dev.alnoer.audiosaas.feature.folders.FoldersScreen
 import dev.alnoer.audiosaas.feature.home.OverviewScreen
 import dev.alnoer.audiosaas.feature.onboarding.OnboardingScreen

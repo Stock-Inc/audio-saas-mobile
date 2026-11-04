@@ -1,6 +1,13 @@
-package dev.alnoer.audiosaas.feature.auth
+package dev.alnoer.audiosaas.feature.auth.data.repository
 
 import android.content.Intent
+import dev.alnoer.audiosaas.feature.auth.data.remote.KeycloakAuthResult
+import dev.alnoer.audiosaas.feature.auth.data.remote.KeycloakIntegration
+import dev.alnoer.audiosaas.feature.auth.domain.model.AuthState
+import dev.alnoer.audiosaas.feature.auth.domain.repository.AuthRepository
+import dev.alnoer.audiosaas.feature.auth.domain.repository.LocalAuthRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -8,21 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import javax.inject.Singleton
-
-interface AuthRepository {
-    val authState: StateFlow<AuthState>
-    fun onAuthResult(intent: Intent)
-    fun getLoginIntent(): Intent?
-}
-
-sealed interface AuthState {
-    data object NotStarted : AuthState
-    data object InProgress : AuthState
-    data object Success : AuthState
-    data class Failure(val message: String) : AuthState
-}
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(

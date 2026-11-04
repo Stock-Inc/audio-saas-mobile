@@ -4,12 +4,12 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.alnoer.audiosaas.feature.auth.AuthRepository
-import dev.alnoer.audiosaas.feature.auth.AuthRepositoryImpl
-import dev.alnoer.audiosaas.feature.auth.KeycloakIntegration
-import dev.alnoer.audiosaas.feature.auth.KeycloakIntegrationImpl
-import dev.alnoer.audiosaas.feature.auth.LocalAuthRepository
-import dev.alnoer.audiosaas.feature.auth.LocalAuthRepositoryImpl
+import dev.alnoer.audiosaas.feature.auth.data.remote.KeycloakIntegration
+import dev.alnoer.audiosaas.feature.auth.data.remote.KeycloakIntegrationImpl
+import dev.alnoer.audiosaas.feature.auth.data.repository.AuthRepositoryImpl
+import dev.alnoer.audiosaas.feature.auth.data.repository.LocalAuthRepositoryImpl
+import dev.alnoer.audiosaas.feature.auth.domain.repository.AuthRepository
+import dev.alnoer.audiosaas.feature.auth.domain.repository.LocalAuthRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
