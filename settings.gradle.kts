@@ -1,6 +1,11 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":feature:preferences")
+
+
 pluginManagement {
+    includeBuild("build-logic")
+
     repositories {
         google {
             content {

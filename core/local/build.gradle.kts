@@ -1,27 +1,11 @@
 plugins {
-    alias(libs.plugins.android.library)
+    id("audiosaas.android.core")
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
 }
 
 android {
     namespace = "dev.alnoer.audiosaas.core.local"
-    compileSdk = 37
-
-    defaultConfig {
-        minSdk = 32
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
-    }
 }
 
 dependencies {
@@ -30,6 +14,11 @@ dependencies {
 
     implementation(libs.androidx.room3.runtime)
     ksp(libs.androidx.room3.compiler)
+
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.tink)
+
+    testImplementation(libs.junit)
 }
 
 ksp {

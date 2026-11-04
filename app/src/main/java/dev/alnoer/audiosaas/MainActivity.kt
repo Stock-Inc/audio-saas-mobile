@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
         )
+
         setContent {
             AudioSaaSTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
