@@ -33,6 +33,7 @@
             <option value="$PROJECT_DIR$/feature/folders" />
             <option value="$PROJECT_DIR$/feature/home" />
             <option value="$PROJECT_DIR$/feature/onboarding" />
+            <option value="$PROJECT_DIR$/feature/preferences" />
             <option value="$PROJECT_DIR$/feature/recordings" />
           </set>
         </option>

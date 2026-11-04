@@ -1,13 +1,18 @@
 package dev.alnoer.audiosaas
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.alnoer.audiosaas.core.designsystem.component.AudioDestination
-import dev.alnoer.audiosaas.feature.auth.SignInScreen
-import dev.alnoer.audiosaas.feature.auth.SignUpScreen
+import dev.alnoer.audiosaas.feature.auth.AuthState
+import dev.alnoer.audiosaas.feature.auth.AuthViewModel
 import dev.alnoer.audiosaas.feature.folders.FoldersScreen
 import dev.alnoer.audiosaas.feature.home.OverviewScreen
 import dev.alnoer.audiosaas.feature.onboarding.OnboardingScreen
@@ -16,8 +21,6 @@ import dev.alnoer.audiosaas.feature.recordings.ResultScreen
 
 private object AppRoute {
     const val ONBOARDING = "onboarding"
-    const val SIGN_IN = "sign_in"
-    const val SIGN_UP = "sign_up"
     const val OVERVIEW = "overview"
     const val HISTORY = "history"
     const val FOLDERS = "folders"
@@ -46,22 +49,31 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
         modifier = modifier,
     ) {
         composable(AppRoute.ONBOARDING) {
+            val authViewModel: AuthViewModel = hiltViewModel()
+
+            val authLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.StartActivityForResult(),
+            ) { result ->
+                val intent = result.data ?: return@rememberLauncherForActivityResult
+                authViewModel.processAuthResult(intent)
+            }
+            val authState = authViewModel.authState.collectAsStateWithLifecycle().value
+
+            LaunchedEffect(authState) {
+                when (authState) {
+                    is AuthState.Failure -> {}
+                    AuthState.InProgress -> {}
+                    AuthState.NotStarted -> {}
+                    AuthState.Success -> navigate(AppRoute.OVERVIEW)
+                }
+            }
+
             OnboardingScreen(
-                onFinished = { navigate(AppRoute.SIGN_IN) },
-                modifier = Modifier,
-            )
-        }
-        composable(AppRoute.SIGN_IN) {
-            SignInScreen(
-                onSignIn = { navigate(AppRoute.OVERVIEW) },
-                onCreateAccount = { navigate(AppRoute.SIGN_UP) },
-                modifier = Modifier,
-            )
-        }
-        composable(AppRoute.SIGN_UP) {
-            SignUpScreen(
-                onCreateAccount = { navigate(AppRoute.OVERVIEW) },
-                onSignIn = { navigate(AppRoute.SIGN_IN) },
+                onFinished = {
+                    if (authState is AuthState.NotStarted || authState is AuthState.Failure) {
+                        authViewModel.getLoginIntent()?.let(authLauncher::launch)
+                    }
+                },
                 modifier = Modifier,
             )
         }

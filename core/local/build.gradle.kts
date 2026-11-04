@@ -9,7 +9,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.datastore.tink)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
 
@@ -17,6 +16,7 @@ dependencies {
     ksp(libs.androidx.room3.compiler)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.tink)
 
     testImplementation(libs.junit)
 }
