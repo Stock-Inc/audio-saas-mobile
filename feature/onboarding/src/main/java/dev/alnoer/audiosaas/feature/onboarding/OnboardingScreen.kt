@@ -51,9 +51,13 @@ private val OnboardingPages = listOf(
 fun OnboardingScreen(
     onFinished: () -> Unit,
     nextButtonEnabled: Boolean,
+    showIntroduction: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val pagerState = rememberPagerState(pageCount = { OnboardingPages.size })
+    val pagerState = rememberPagerState(
+        initialPage = if (showIntroduction) 0 else OnboardingPages.lastIndex,
+        pageCount = { OnboardingPages.size },
+    )
     val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -138,7 +142,8 @@ private fun OnboardingScreenPreview() {
         Surface {
             OnboardingScreen(
                 onFinished = {},
-                nextButtonEnabled = true
+                nextButtonEnabled = true,
+                showIntroduction = true,
             )
         }
     }

@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,13 +23,17 @@ import dev.alnoer.audiosaas.core.designsystem.component.AudioDestination
 import dev.alnoer.audiosaas.core.designsystem.component.AudioSnackbarHost
 import dev.alnoer.audiosaas.core.designsystem.component.AudioSnackbarType
 import dev.alnoer.audiosaas.core.designsystem.component.showAudioSnackbar
+import dev.alnoer.audiosaas.feature.auth.AuthSessionViewModel
 import dev.alnoer.audiosaas.feature.auth.AuthState
 import dev.alnoer.audiosaas.feature.auth.AuthViewModel
 import dev.alnoer.audiosaas.feature.folders.FoldersScreen
 import dev.alnoer.audiosaas.feature.home.OverviewScreen
 import dev.alnoer.audiosaas.feature.onboarding.OnboardingScreen
+import dev.alnoer.audiosaas.feature.preferences.PreferencesViewModel
 import dev.alnoer.audiosaas.feature.recordings.HistoryScreen
 import dev.alnoer.audiosaas.feature.recordings.ResultScreen
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 private object AppRoute {
     const val ONBOARDING = "onboarding"
@@ -38,14 +43,24 @@ private object AppRoute {
     const val RESULT = "result"
 }
 
+internal data class AppStartupState(
+    val startDestination: String,
+    val showIntroduction: Boolean,
+)
+
+internal fun resolveAppStartupState(
+    isFirstTimeLaunch: Boolean,
+    isAuthenticated: Boolean,
+): AppStartupState = AppStartupState(
+    startDestination = if (isAuthenticated) AppRoute.OVERVIEW else AppRoute.ONBOARDING,
+    showIntroduction = isFirstTimeLaunch && !isAuthenticated,
+)
+
 @Composable
 fun AudioSaaSApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    fun navigate(route: String) {
-        navController.navigate(route)
-    }
     fun selectDestination(destination: AudioDestination) {
-        navigate(
+        navController.navigate(
             when (destination) {
                 AudioDestination.Overview -> AppRoute.OVERVIEW
                 AudioDestination.Recordings -> AppRoute.HISTORY
@@ -53,15 +68,32 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
             }
         )
     }
+    val preferencesViewModel: PreferencesViewModel = hiltViewModel()
+    val authSessionViewModel: AuthSessionViewModel = hiltViewModel()
+    val isFirstTimeLaunch = preferencesViewModel.isFirstTimeLaunch
+        .collectAsStateWithLifecycle(initialValue = null)
+        .value
+    val isAuthenticated = authSessionViewModel.isAuthenticated
+        .collectAsStateWithLifecycle(initialValue = null)
+        .value
+    if (isFirstTimeLaunch == null || isAuthenticated == null) return
+
+    val startupState = remember {
+        resolveAppStartupState(
+            isFirstTimeLaunch = isFirstTimeLaunch,
+            isAuthenticated = isAuthenticated,
+        )
+    }
 
     NavHost(
         navController = navController,
-        startDestination = AppRoute.ONBOARDING,
+        startDestination = startupState.startDestination,
         modifier = modifier,
     ) {
         composable(AppRoute.ONBOARDING) {
             val authViewModel: AuthViewModel = hiltViewModel()
             val snackbarHostState = remember { SnackbarHostState() }
+            val coroutineScope = rememberCoroutineScope()
 
             val authLauncher = rememberLauncherForActivityResult(
                 ActivityResultContracts.StartActivityForResult(),
@@ -80,7 +112,11 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
                         withDismissAction = true,
                         duration = SnackbarDuration.Long,
                     )
-                    AuthState.Success -> navigate(AppRoute.OVERVIEW)
+                    AuthState.Success -> navController.navigate(AppRoute.OVERVIEW) {
+                        popUpTo(AppRoute.ONBOARDING) {
+                            inclusive = true
+                        }
+                    }
 
                     else -> {}
                 }
@@ -90,10 +126,25 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
                 OnboardingScreen(
                     onFinished = {
                         if (authAvailable) {
-                            authViewModel.getLoginIntent()?.let(authLauncher::launch)
+                            coroutineScope.launch {
+                                try {
+                                    preferencesViewModel.setNotFirstTimeLaunch()
+                                    authViewModel.getLoginIntent()?.let(authLauncher::launch)
+                                } catch (exception: CancellationException) {
+                                    throw exception
+                                } catch (_: Exception) {
+                                    snackbarHostState.showAudioSnackbar(
+                                        message = "Не удалось сохранить настройки. Попробуйте ещё раз.",
+                                        type = AudioSnackbarType.Error,
+                                        withDismissAction = true,
+                                        duration = SnackbarDuration.Long,
+                                    )
+                                }
+                            }
                         }
                     },
                     nextButtonEnabled = authAvailable,
+                    showIntroduction = startupState.showIntroduction,
                     modifier = Modifier,
                 )
                 AudioSnackbarHost(
@@ -107,17 +158,17 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
         composable(AppRoute.OVERVIEW) {
             OverviewScreen(
                 onDestinationSelected = ::selectDestination,
-                onRecordingSelected = { navigate(AppRoute.RESULT) },
-                onNewRecording = { navigate(AppRoute.RESULT) },
-                onViewAll = { navigate(AppRoute.HISTORY) },
+                onRecordingSelected = { navController.navigate(AppRoute.RESULT) },
+                onNewRecording = { navController.navigate(AppRoute.RESULT) },
+                onViewAll = { navController.navigate(AppRoute.HISTORY) },
                 modifier = Modifier,
             )
         }
         composable(AppRoute.HISTORY) {
             HistoryScreen(
                 onDestinationSelected = ::selectDestination,
-                onRecordingSelected = { navigate(AppRoute.RESULT) },
-                onNewRecording = { navigate(AppRoute.RESULT) },
+                onRecordingSelected = { navController.navigate(AppRoute.RESULT) },
+                onNewRecording = { navController.navigate(AppRoute.RESULT) },
                 modifier = Modifier,
             )
         }

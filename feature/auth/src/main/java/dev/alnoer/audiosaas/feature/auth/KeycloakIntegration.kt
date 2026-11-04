@@ -103,6 +103,7 @@ class KeycloakIntegrationImpl @Inject constructor(
 
             val accessToken = tokenResponse?.accessToken
             val refreshToken = tokenResponse?.refreshToken
+            val accessTokenExpiresAtMillis = tokenResponse?.accessTokenExpirationTime
 
             if (accessToken.isNullOrBlank()) {
                 onResult(
@@ -122,11 +123,21 @@ class KeycloakIntegrationImpl @Inject constructor(
                 return@performTokenRequest
             }
 
+            if (accessTokenExpiresAtMillis == null) {
+                onResult(
+                    KeycloakAuthResult.Failure(
+                        "Access token expiration is missing"
+                    )
+                )
+                return@performTokenRequest
+            }
+
             onResult(
                 KeycloakAuthResult.Success(
                     AuthTokens(
-                        accessToken,
-                        refreshToken
+                        accessToken = accessToken,
+                        refreshToken = refreshToken,
+                        accessTokenExpiresAtMillis = accessTokenExpiresAtMillis,
                     )
                 )
             )
