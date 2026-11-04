@@ -19,6 +19,8 @@ android {
         versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders["appAuthRedirectScheme"] = "dev.alnoer.audiosaas"
     }
 
     signingConfigs {
