@@ -35,6 +35,7 @@
             <option value="$PROJECT_DIR$/feature/onboarding" />
             <option value="$PROJECT_DIR$/feature/preferences" />
             <option value="$PROJECT_DIR$/feature/recordings" />
+            <option value="$PROJECT_DIR$/feature/upload" />
           </set>
         </option>
       </GradleProjectSettings>

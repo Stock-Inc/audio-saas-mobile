@@ -67,6 +67,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:recordings"))
+    implementation(project(":feature:upload"))
     implementation(project(":feature:preferences"))
 
     implementation(platform(libs.androidx.compose.bom))
