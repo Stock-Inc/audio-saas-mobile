@@ -12,7 +12,11 @@ android {
     }
 
     defaultConfig {
-        buildConfigField("String", "UPLOAD_URL", "\"http://localhost:8081/api/v1/audio\"")
+        buildConfigField(
+            "String",
+            "UPLOAD_URL",
+            "\"${providers.gradleProperty("AUDIO_UPLOAD_URL").get()}\"",
+        )
     }
 }
 

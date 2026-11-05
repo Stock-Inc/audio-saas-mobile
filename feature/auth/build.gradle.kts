@@ -6,6 +6,38 @@ plugins {
 
 android {
     namespace = "dev.alnoer.audiosaas.feature.auth"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    defaultConfig {
+        buildConfigField(
+            "String",
+            "KEYCLOAK_BASE_URL",
+            "\"${providers.gradleProperty("KEYCLOAK_BASE_URL").get()}\"",
+        )
+        buildConfigField(
+            "String",
+            "KEYCLOAK_CLIENT_ID",
+            "\"${providers.gradleProperty("KEYCLOAK_CLIENT_ID").get()}\"",
+        )
+        buildConfigField(
+            "String",
+            "KEYCLOAK_SCOPES",
+            "\"${providers.gradleProperty("KEYCLOAK_SCOPES").get()}\"",
+        )
+        buildConfigField(
+            "boolean",
+            "KEYCLOAK_SKIP_ISSUER_HTTPS_CHECK",
+            providers.gradleProperty("KEYCLOAK_SKIP_ISSUER_HTTPS_CHECK").get(),
+        )
+        buildConfigField(
+            "String",
+            "OAUTH_REDIRECT_URI",
+            "\"${providers.gradleProperty("OAUTH_REDIRECT_URI").get()}\"",
+        )
+    }
 }
 
 dependencies {
