@@ -1,14 +1,9 @@
 plugins {
-    id("audiosaas.android.core")
-    alias(libs.plugins.kotlin.compose)
+    id("audiosaas.android.library.compose")
 }
 
 android {
     namespace = "dev.alnoer.audiosaas.core.designsystem"
-
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {

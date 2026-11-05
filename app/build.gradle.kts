@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.hilt.android)
 }
 
+val oauthRedirectUri = providers.gradleProperty("OAUTH_REDIRECT_URI").get()
+
 android {
     namespace = "dev.alnoer.audiosaas"
     compileSdk {
@@ -20,7 +22,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        manifestPlaceholders["appAuthRedirectScheme"] = "dev.alnoer.audiosaas"
+        manifestPlaceholders["appAuthRedirectScheme"] = oauthRedirectUri.substringBefore(':')
     }
 
     signingConfigs {
@@ -67,6 +69,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:recordings"))
+    implementation(project(":feature:upload"))
     implementation(project(":feature:preferences"))
 
     implementation(platform(libs.androidx.compose.bom))

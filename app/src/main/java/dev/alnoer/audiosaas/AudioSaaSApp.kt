@@ -32,6 +32,7 @@ import dev.alnoer.audiosaas.feature.onboarding.OnboardingScreen
 import dev.alnoer.audiosaas.feature.preferences.PreferencesViewModel
 import dev.alnoer.audiosaas.feature.recordings.HistoryScreen
 import dev.alnoer.audiosaas.feature.recordings.ResultScreen
+import dev.alnoer.audiosaas.feature.upload.UploadRoute
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -42,6 +43,7 @@ private object AppRoute {
     const val HISTORY = "history"
     const val FOLDERS = "folders"
     const val RESULT = "result"
+    const val UPLOAD = "upload"
 }
 
 internal data class AppStartupState(
@@ -188,7 +190,7 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
             OverviewScreen(
                 onDestinationSelected = ::selectDestination,
                 onRecordingSelected = { navController.navigate(AppRoute.RESULT) },
-                onNewRecording = { navController.navigate(AppRoute.RESULT) },
+                onNewRecording = { navController.navigate(AppRoute.UPLOAD) },
                 onViewAll = { navController.navigate(AppRoute.HISTORY) },
                 modifier = Modifier,
             )
@@ -197,13 +199,19 @@ fun AudioSaaSApp(modifier: Modifier = Modifier) {
             HistoryScreen(
                 onDestinationSelected = ::selectDestination,
                 onRecordingSelected = { navController.navigate(AppRoute.RESULT) },
-                onNewRecording = { navController.navigate(AppRoute.RESULT) },
+                onNewRecording = { navController.navigate(AppRoute.UPLOAD) },
                 modifier = Modifier,
             )
         }
         composable(AppRoute.FOLDERS) {
             FoldersScreen(
                 onDestinationSelected = ::selectDestination,
+                modifier = Modifier,
+            )
+        }
+        composable(AppRoute.UPLOAD) {
+            UploadRoute(
+                onBack = { navController.popBackStack() },
                 modifier = Modifier,
             )
         }

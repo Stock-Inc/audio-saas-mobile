@@ -1,5 +1,5 @@
 plugins {
-    id("audiosaas.android.core")
+    id("audiosaas.android.library")
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
 }

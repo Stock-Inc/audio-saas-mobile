@@ -20,8 +20,6 @@ object NetworkModule {
                 config {
                     followRedirects(false)
                 }
-
-                duplexStreamingEnabled = true
             }
         }
 }

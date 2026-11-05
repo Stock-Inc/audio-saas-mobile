@@ -4,10 +4,11 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
-class AndroidCoreConventionPlugin : Plugin<Project> {
+class AndroidComposeLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply("com.android.library")
+            pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
 
             extensions.configure<LibraryExtension> {
                 compileSdk = 37
@@ -19,6 +20,10 @@ class AndroidCoreConventionPlugin : Plugin<Project> {
                 compileOptions {
                     sourceCompatibility = JavaVersion.VERSION_17
                     targetCompatibility = JavaVersion.VERSION_17
+                }
+
+                buildFeatures {
+                    compose = true
                 }
             }
         }

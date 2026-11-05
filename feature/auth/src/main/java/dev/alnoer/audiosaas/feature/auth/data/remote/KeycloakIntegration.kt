@@ -5,7 +5,8 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dev.alnoer.audiosaas.feature.auth.domain.model.AuthTokens
+import dev.alnoer.audiosaas.auth.model.AuthTokens
+import dev.alnoer.audiosaas.feature.auth.BuildConfig
 import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
@@ -36,16 +37,16 @@ sealed interface KeycloakAuthResult {
 
 @Singleton
 class KeycloakIntegrationImpl @Inject constructor(
-    @ApplicationContext applicationContext: Context
+    @ApplicationContext applicationContext: Context,
 ): KeycloakIntegration {
-    private val keycloakBaseUrl = "http://10.0.2.2:9090/realms/demo"
+    private val keycloakBaseUrl = BuildConfig.KEYCLOAK_BASE_URL.trimEnd('/')
 
     private val serviceConfiguration = AuthorizationServiceConfiguration(
         "$keycloakBaseUrl/protocol/openid-connect/auth".toUri(),
         "$keycloakBaseUrl/protocol/openid-connect/token".toUri(),
     )
 
-    private val redirectUri = "dev.alnoer.audiosaas:/oauth2redirect".toUri()
+    private val redirectUri = BuildConfig.OAUTH_REDIRECT_URI.toUri()
 
     private val authState = AuthState()
 
@@ -60,7 +61,7 @@ class KeycloakIntegrationImpl @Inject constructor(
     private val authService by lazy {
         val appAuthConfig = AppAuthConfiguration.Builder()
             .setConnectionBuilder(connectionBuilder)
-            .setSkipIssuerHttpsCheck(true)
+            .setSkipIssuerHttpsCheck(BuildConfig.KEYCLOAK_SKIP_ISSUER_HTTPS_CHECK)
             .build()
 
         AuthorizationService(applicationContext, appAuthConfig)
@@ -149,11 +150,11 @@ class KeycloakIntegrationImpl @Inject constructor(
         try {
             val request = AuthorizationRequest.Builder(
                 serviceConfiguration,
-                "sonora-android",
+                BuildConfig.KEYCLOAK_CLIENT_ID,
                 ResponseTypeValues.CODE,
                 redirectUri
             )
-                .setScope("openid profile email")
+                .setScope(BuildConfig.KEYCLOAK_SCOPES)
                 .build()
 
             val intent = authService.getAuthorizationRequestIntent(request)

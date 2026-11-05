@@ -29,7 +29,6 @@ import dev.alnoer.audiosaas.core.designsystem.component.AudioIconAsset
 import dev.alnoer.audiosaas.core.designsystem.component.AudioMainScaffold
 import dev.alnoer.audiosaas.core.designsystem.component.AudioPageTitle
 import dev.alnoer.audiosaas.core.designsystem.component.AudioRecordingRow
-import dev.alnoer.audiosaas.feature.recordings.SampleRecordings
 import dev.alnoer.audiosaas.core.designsystem.theme.AudioSaaSTheme
 import dev.alnoer.audiosaas.core.designsystem.theme.Newsreader
 import dev.alnoer.audiosaas.core.designsystem.theme.audioColors
@@ -86,7 +85,7 @@ fun OverviewScreen(
                 )
             }
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                SampleRecordings.take(3).forEach { recording ->
+                sampleRecentRecordings.forEach { recording ->
                     AudioRecordingRow(
                         title = recording.title,
                         metadata = recording.metadata,
@@ -98,6 +97,30 @@ fun OverviewScreen(
         }
     }
 }
+
+private data class OverviewRecording(
+    val title: String,
+    val metadata: String,
+    val status: String,
+)
+
+private val sampleRecentRecordings = listOf(
+    OverviewRecording(
+        title = "Интервью с пользователем",
+        metadata = "48:06 · 2 спикера · сегодня",
+        status = "ГОТОВО",
+    ),
+    OverviewRecording(
+        title = "Weekly sync команды",
+        metadata = "32:18 · 5 спикеров · вчера",
+        status = "ГОТОВО",
+    ),
+    OverviewRecording(
+        title = "Созвон с заказчиком",
+        metadata = "21:42 · 3 спикера · 16 окт",
+        status = "AI-СВОДКА",
+    ),
+)
 
 @Composable
 private fun MonthlySummary() {

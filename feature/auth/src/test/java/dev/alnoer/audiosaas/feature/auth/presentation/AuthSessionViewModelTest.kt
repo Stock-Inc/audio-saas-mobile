@@ -1,7 +1,7 @@
 package dev.alnoer.audiosaas.feature.auth.presentation
 
-import dev.alnoer.audiosaas.feature.auth.domain.model.AuthTokens
-import dev.alnoer.audiosaas.feature.auth.domain.repository.LocalAuthRepository
+import dev.alnoer.audiosaas.auth.model.AuthTokens
+import dev.alnoer.audiosaas.auth.repository.AuthSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.take
@@ -33,7 +33,7 @@ class AuthSessionViewModelTest {
 
     private class FakeLocalAuthRepository(
         initialTokens: AuthTokens?,
-    ) : LocalAuthRepository {
+    ) : AuthSessionRepository {
         override val tokens: Flow<AuthTokens?> = MutableStateFlow(initialTokens)
 
         override suspend fun saveTokens(tokens: AuthTokens) = Unit
