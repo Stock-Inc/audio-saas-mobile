@@ -1,4 +1,4 @@
-package dev.alnoer.audiosaas
+package dev.alnoer.audiosaas.navigation
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
