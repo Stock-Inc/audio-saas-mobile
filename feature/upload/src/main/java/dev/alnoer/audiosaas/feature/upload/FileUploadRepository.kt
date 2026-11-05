@@ -4,28 +4,39 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.alnoer.audiosaas.feature.auth.domain.repository.LocalAuthRepository
 import io.ktor.client.HttpClient
+import io.ktor.client.request.accept
+import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import io.ktor.http.isSuccess
 import io.ktor.utils.io.streams.asInput
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.first
 
 @Singleton
 class FileUploadRepository @Inject constructor(
     @ApplicationContext context: Context,
     private val httpClient: HttpClient,
+    private val localAuthRepository: LocalAuthRepository,
 ) {
     private val contentResolver = context.contentResolver
 
     suspend fun upload(uri: Uri) {
-        val uploadUrl = requireConfiguredUploadUrl(BuildConfig.UPLOAD_URL)
+        val uploadUrl = resolveUploadUrl(BuildConfig.UPLOAD_URL)
+        val tokens = localAuthRepository.tokens.first()
+        check(tokens?.isAccessTokenValid() == true) {
+            "Сессия истекла. Войдите снова."
+        }
         val (fileName, fileSize) = contentResolver.readMetadata(uri)
         val headers = Headers.build {
             append(HttpHeaders.ContentDisposition, "filename=\"${safeUploadFileName(fileName)}\"")
@@ -35,9 +46,20 @@ class FileUploadRepository @Inject constructor(
             )
         }
         val response = httpClient.post(uploadUrl) {
+            bearerAuth(tokens.accessToken)
+            accept(ContentType.Application.Json)
             setBody(
                 MultiPartFormDataContent(
                     formData {
+                        append("requestId", UUID.randomUUID().toString())
+                        append("recordId", UUID.randomUUID().toString())
+                        append(
+                            "options",
+                            "{}",
+                            Headers.build {
+                                append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                            },
+                        )
                         appendInput("file", headers, fileSize) {
                             checkNotNull(contentResolver.openInputStream(uri)) {
                                 "Не удалось открыть выбранный файл."
@@ -48,8 +70,10 @@ class FileUploadRepository @Inject constructor(
             )
         }
 
-        check(response.status.isSuccess()) {
-            "Сервер отклонил загрузку (${response.status.value})."
+        Log.d("UPLOAD", "Status: ${response.status}")
+        Log.d("UPLOAD", "Location: ${response.headers[HttpHeaders.Location]}")
+        check(response.status.value == 202) {
+            uploadFailureMessage(response.status.value)
         }
     }
 }
@@ -85,11 +109,28 @@ private fun ContentResolver.readMetadata(uri: Uri): FileMetadata {
     return FileMetadata(name = name, size = size)
 }
 
-internal fun requireConfiguredUploadUrl(url: String): String {
+private const val AUDIO_UPLOAD_PATH = "/api/v1/audio"
+
+internal fun resolveUploadUrl(url: String): String {
     require(url.startsWith("https://") || url.startsWith("http://")) {
         "Адрес загрузки не настроен."
     }
-    return url
+    val normalizedUrl = url.trimEnd('/')
+    return if (normalizedUrl.endsWith(AUDIO_UPLOAD_PATH)) {
+        normalizedUrl
+    } else {
+        normalizedUrl + AUDIO_UPLOAD_PATH
+    }
+}
+
+internal fun uploadFailureMessage(statusCode: Int): String = when (statusCode) {
+    302 -> "Сервер перенаправил запрос на страницу входа."
+    400 -> "Файл или параметры загрузки некорректны."
+    401 -> "Не удалось авторизовать загрузку. Войдите снова."
+    413 -> "Файл превышает допустимый размер."
+    415 -> "Сервер не поддерживает тип выбранного файла."
+    502 -> "Сервис обработки аудио временно недоступен."
+    else -> "Сервер отклонил загрузку ($statusCode)."
 }
 
 internal fun safeUploadFileName(name: String): String =

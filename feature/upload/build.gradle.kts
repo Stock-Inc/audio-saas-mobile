@@ -12,14 +12,14 @@ android {
     }
 
     defaultConfig {
-        val uploadUrl = providers.gradleProperty("AUDIO_UPLOAD_URL").orElse("").get()
-        buildConfigField("String", "UPLOAD_URL", "\"$uploadUrl\"")
+        buildConfigField("String", "UPLOAD_URL", "\"http://localhost:8081/api/v1/audio\"")
     }
 }
 
 dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:network"))
+    implementation(project(":feature:auth"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

@@ -38,7 +38,7 @@ sealed interface KeycloakAuthResult {
 class KeycloakIntegrationImpl @Inject constructor(
     @ApplicationContext applicationContext: Context
 ): KeycloakIntegration {
-    private val keycloakBaseUrl = "http://10.0.2.2:9090/realms/demo"
+    private val keycloakBaseUrl = "http://localhost:9090/realms/demo"
 
     private val serviceConfiguration = AuthorizationServiceConfiguration(
         "$keycloakBaseUrl/protocol/openid-connect/auth".toUri(),

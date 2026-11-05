@@ -7,18 +7,42 @@ import org.junit.Test
 class FileUploadRepositoryTest {
 
     @Test
-    fun configuredUploadUrlAcceptsHttpEndpoints() {
+    fun configuredUploadUrlAppendsAudioPath() {
         assertEquals(
-            "https://example.test/upload",
-            requireConfiguredUploadUrl("https://example.test/upload"),
+            "https://example.test/api/v1/audio",
+            resolveUploadUrl("https://example.test"),
+        )
+    }
+
+    @Test
+    fun configuredUploadUrlPreservesFullEndpoint() {
+        assertEquals(
+            "https://example.test/api/v1/audio",
+            resolveUploadUrl("https://example.test/api/v1/audio/"),
         )
     }
 
     @Test
     fun configuredUploadUrlRejectsMissingEndpoint() {
         assertThrows(IllegalArgumentException::class.java) {
-            requireConfiguredUploadUrl("")
+            resolveUploadUrl("")
         }
+    }
+
+    @Test
+    fun uploadErrorExplainsAuthenticationRedirect() {
+        assertEquals(
+            "Сервер перенаправил запрос на страницу входа.",
+            uploadFailureMessage(302),
+        )
+    }
+
+    @Test
+    fun uploadErrorExplainsOversizedFile() {
+        assertEquals(
+            "Файл превышает допустимый размер.",
+            uploadFailureMessage(413),
+        )
     }
 
     @Test

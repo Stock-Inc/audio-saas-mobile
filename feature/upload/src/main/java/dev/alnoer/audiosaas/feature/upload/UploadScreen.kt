@@ -49,7 +49,7 @@ fun UploadRoute(
     UploadScreen(
         uiState = uiState,
         onBack = onBack,
-        onChooseFile = { documentLauncher.launch(arrayOf("audio/*")) },
+        onChooseFile = { documentLauncher.launch(arrayOf("*/*")) },
         modifier = modifier,
     )
 }
@@ -94,9 +94,9 @@ fun UploadScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            AudioPageTitle("Загрузка аудио")
+            AudioPageTitle("Загрузка файла")
             Text(
-                text = "Выберите аудиофайл на устройстве. После выбора загрузка начнётся автоматически.",
+                text = "Выберите файл на устройстве. После выбора загрузка начнётся автоматически.",
                 color = MaterialTheme.audioColors.mutedForeground,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -129,7 +129,7 @@ fun UploadScreen(
                         text = if (uiState == UploadUiState.Success) {
                             "Выбрать другой файл"
                         } else {
-                            "Выбрать аудиофайл"
+                            "Выбрать файл"
                         },
                         onClick = onChooseFile,
                         modifier = Modifier.fillMaxWidth(),
