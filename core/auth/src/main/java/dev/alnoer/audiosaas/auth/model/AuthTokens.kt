@@ -1,4 +1,4 @@
-package dev.alnoer.audiosaas.feature.auth.domain.model
+package dev.alnoer.audiosaas.auth.model
 
 data class AuthTokens(
     val accessToken: String,

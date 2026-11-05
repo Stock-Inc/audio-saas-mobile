@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dev.alnoer.audiosaas.feature.auth.domain.model.AuthTokens
+import dev.alnoer.audiosaas.auth.model.AuthTokens
 import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException

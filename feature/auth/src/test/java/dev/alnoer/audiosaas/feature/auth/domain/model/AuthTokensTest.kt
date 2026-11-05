@@ -1,5 +1,6 @@
 package dev.alnoer.audiosaas.feature.auth.domain.model
 
+import dev.alnoer.audiosaas.auth.model.AuthTokens
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test

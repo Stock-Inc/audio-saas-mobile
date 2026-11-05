@@ -20,7 +20,7 @@ sealed interface UploadUiState {
 
 @HiltViewModel
 class UploadViewModel @Inject constructor(
-    private val repository: FileUploadRepository,
+    private val uploadFile: UploadFileUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UploadUiState>(UploadUiState.Idle)
     val uiState: StateFlow<UploadUiState> = _uiState.asStateFlow()
@@ -31,7 +31,7 @@ class UploadViewModel @Inject constructor(
         _uiState.value = UploadUiState.Uploading
         viewModelScope.launch {
             try {
-                repository.upload(uri)
+                uploadFile(uri.toString())
                 _uiState.value = UploadUiState.Success
             } catch (exception: CancellationException) {
                 throw exception

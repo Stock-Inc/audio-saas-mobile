@@ -1,17 +1,19 @@
-package dev.alnoer.audiosaas.feature.auth.data.repository
+package dev.alnoer.audiosaas.auth.data
 
-import dev.alnoer.audiosaas.feature.auth.domain.model.AuthTokens
-import dev.alnoer.audiosaas.feature.auth.domain.repository.LocalAuthRepository
+import dev.alnoer.audiosaas.auth.model.AuthTokens
+import dev.alnoer.audiosaas.auth.repository.AccessTokenProvider
+import dev.alnoer.audiosaas.auth.repository.AuthSessionRepository
 import dev.alnoer.audiosaas.local.keyvalue.KeyValueStore
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 @Singleton
-class LocalAuthRepositoryImpl @Inject constructor(
+class AuthSessionRepositoryImpl @Inject constructor(
     private val keyValueStore: KeyValueStore,
-) : LocalAuthRepository {
+) : AuthSessionRepository, AccessTokenProvider {
     override val tokens: Flow<AuthTokens?> =
         keyValueStore.observeStrings(TOKEN_KEYS).map { values ->
             val accessToken = values[ACCESS_TOKEN] ?: return@map null
@@ -25,6 +27,11 @@ class LocalAuthRepositoryImpl @Inject constructor(
                 accessTokenExpiresAtMillis = accessTokenExpiresAtMillis,
             )
         }
+
+    override suspend fun validAccessToken(): String? =
+        tokens.first()
+            ?.takeIf(AuthTokens::isAccessTokenValid)
+            ?.accessToken
 
     override suspend fun saveTokens(tokens: AuthTokens) {
         requireValidToken(tokens.accessToken, "Access")

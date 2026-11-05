@@ -1,11 +1,11 @@
 package dev.alnoer.audiosaas.feature.auth.data.repository
 
 import android.content.Intent
+import dev.alnoer.audiosaas.auth.repository.AuthSessionRepository
 import dev.alnoer.audiosaas.feature.auth.data.remote.KeycloakAuthResult
 import dev.alnoer.audiosaas.feature.auth.data.remote.KeycloakIntegration
 import dev.alnoer.audiosaas.feature.auth.domain.model.AuthState
 import dev.alnoer.audiosaas.feature.auth.domain.repository.AuthRepository
-import dev.alnoer.audiosaas.feature.auth.domain.repository.LocalAuthRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class AuthRepositoryImpl @Inject constructor(
     private val keycloakIntegration: KeycloakIntegration,
-    private val localAuthRepository: LocalAuthRepository,
+    private val authSessionRepository: AuthSessionRepository,
 ) : AuthRepository {
     private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val _authState = MutableStateFlow<AuthState>(AuthState.NotStarted)
@@ -35,7 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
                 is KeycloakAuthResult.Success -> {
                     repositoryScope.launch {
                         try {
-                            localAuthRepository.saveTokens(result.tokens)
+                            authSessionRepository.saveTokens(result.tokens)
                             _authState.value = AuthState.Success
                         } catch (exception: Exception) {
                             _authState.value = AuthState.Failure(

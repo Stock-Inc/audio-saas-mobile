@@ -32,6 +32,7 @@ dependencyResolutionManagement {
 rootProject.name = "Audio SaaS"
 
 include(":app")
+include(":core:auth")
 include(":core:designsystem")
 include(":core:local")
 include(":core:network")

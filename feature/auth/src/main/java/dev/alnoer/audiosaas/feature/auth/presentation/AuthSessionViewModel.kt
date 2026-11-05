@@ -2,7 +2,7 @@ package dev.alnoer.audiosaas.feature.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.alnoer.audiosaas.feature.auth.domain.repository.LocalAuthRepository
+import dev.alnoer.audiosaas.auth.repository.AuthSessionRepository
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -12,10 +12,10 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class AuthSessionViewModel @Inject constructor(
-    localAuthRepository: LocalAuthRepository,
+    authSessionRepository: AuthSessionRepository,
 ) : ViewModel() {
     val isAuthenticated: Flow<Boolean?> = channelFlow {
-        localAuthRepository.tokens.collectLatest { tokens ->
+        authSessionRepository.tokens.collectLatest { tokens ->
             val remainingMillis = tokens
                 ?.let { it.accessTokenExpiresAtMillis - System.currentTimeMillis() }
                 ?: 0L
