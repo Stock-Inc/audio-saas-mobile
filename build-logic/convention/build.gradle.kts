@@ -9,13 +9,13 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        register("androidFeature") {
-            id = "audiosaas.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
+        register("androidComposeLibrary") {
+            id = "audiosaas.android.library.compose"
+            implementationClass = "AndroidComposeLibraryConventionPlugin"
         }
-        register("androidCore") {
-            id = "audiosaas.android.core"
-            implementationClass = "AndroidCoreConventionPlugin"
+        register("androidLibrary") {
+            id = "audiosaas.android.library"
+            implementationClass = "AndroidLibraryConventionPlugin"
         }
     }
 }

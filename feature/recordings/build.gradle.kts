@@ -1,5 +1,5 @@
 plugins {
-    id("audiosaas.android.feature")
+    id("audiosaas.android.library.compose")
 }
 
 android {
