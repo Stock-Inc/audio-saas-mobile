@@ -1,5 +1,7 @@
 plugins {
     id("audiosaas.android.library.compose")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -7,6 +9,11 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:library"))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     implementation(project(":core:designsystem"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.material3)

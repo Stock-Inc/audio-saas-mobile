@@ -78,7 +78,7 @@ fun AudioRecordingRow(
 @Composable
 fun AudioFolderRow(
     name: String,
-    count: Int,
+    count: Int? = null,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -99,11 +99,14 @@ fun AudioFolderRow(
     ) {
         Text(
             text = name,
+            modifier = Modifier.weight(1f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.labelLarge,
         )
         Text(
-            text = count.toString(),
+            text = count?.toString().orEmpty(),
             color = MaterialTheme.audioColors.mutedForeground,
             style = MaterialTheme.typography.bodySmall,
         )
