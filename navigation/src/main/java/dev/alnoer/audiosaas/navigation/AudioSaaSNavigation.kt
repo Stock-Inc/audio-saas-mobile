@@ -17,7 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
+import dev.alnoer.audiosaas.feature.recordings.RecordingOrganizationScreen
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.alnoer.audiosaas.core.designsystem.component.AudioDestination
@@ -44,6 +47,7 @@ private object AppRoute {
     const val HISTORY = "history"
     const val FOLDERS = "folders"
     const val RESULT = "result"
+    const val AUDIO = "audio/{audioId}"
     const val UPLOAD = "upload"
     const val RECORD = "record"
 }
@@ -98,7 +102,7 @@ fun AudioSaaSNavigation(modifier: Modifier = Modifier) {
                 .route
             if (currentRoute != AppRoute.ONBOARDING) {
                 navController.navigate(AppRoute.ONBOARDING) {
-                    popUpTo(AppRoute.OVERVIEW) {
+                    popUpTo(navController.graph.id) {
                         inclusive = true
                     }
                     launchSingleTop = true
@@ -198,10 +202,13 @@ fun AudioSaaSNavigation(modifier: Modifier = Modifier) {
                 modifier = Modifier,
             )
         }
-        composable(AppRoute.HISTORY) {
+        composable(
+            AppRoute.HISTORY + "?tagId={tagId}",
+            arguments = listOf(navArgument("tagId") { type = NavType.StringType; nullable = true; defaultValue = null }),
+        ) {
             HistoryScreen(
                 onDestinationSelected = ::selectDestination,
-                onRecordingSelected = { navController.navigate(AppRoute.RESULT) },
+                onRecordingSelected = { id -> navController.navigate("audio/$id") },
                 onNewRecording = { navController.navigate(AppRoute.UPLOAD) },
                 onRecordVoice = { navController.navigate(AppRoute.RECORD) },
                 modifier = Modifier,
@@ -210,6 +217,8 @@ fun AudioSaaSNavigation(modifier: Modifier = Modifier) {
         composable(AppRoute.FOLDERS) {
             FoldersScreen(
                 onDestinationSelected = ::selectDestination,
+                onRecordingSelected = { id -> navController.navigate("audio/$id") },
+                onTagSelected = { id -> navController.navigate("history?tagId=$id") },
                 modifier = Modifier,
             )
         }
@@ -221,6 +230,9 @@ fun AudioSaaSNavigation(modifier: Modifier = Modifier) {
                 onBack = { navController.popBackStack() },
                 modifier = Modifier,
             )
+        }
+        composable(AppRoute.AUDIO) {
+            RecordingOrganizationScreen(onBack = { navController.popBackStack() })
         }
         composable(AppRoute.RESULT) {
             ResultScreen(
