@@ -15,7 +15,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.utils.io.streams.asInput
-import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,13 +40,11 @@ class KtorFileUploadRepository @Inject constructor(
     }
 }
 
-private fun UploadFile.asMultipartContent() = MultiPartFormDataContent(
+internal fun UploadFile.asMultipartContent() = MultiPartFormDataContent(
     formData {
-        append("requestId", UUID.randomUUID().toString())
-        append("recordId", UUID.randomUUID().toString())
         append(
             "options",
-            "{}",
+            """{"diarization":true,"summary":true,"tasks":true}""",
             Headers.build {
                 append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
             },
@@ -86,6 +83,7 @@ internal fun uploadFailureMessage(statusCode: Int): String = when (statusCode) {
     413 -> "Файл превышает допустимый размер."
     415 -> "Сервер не поддерживает тип выбранного файла."
     502 -> "Сервис обработки аудио временно недоступен."
+    503 -> "Обработка аудио временно приостановлена. Попробуйте позже."
     else -> "Сервер отклонил загрузку ($statusCode)."
 }
 

@@ -27,4 +27,8 @@ class UploadFileUseCase @Inject constructor(
     suspend operator fun invoke(uri: String) = withContext(Dispatchers.IO) {
         repository.upload(fileReader.read(uri))
     }
+
+    suspend operator fun invoke(file: UploadFile) = withContext(Dispatchers.IO) {
+        repository.upload(file)
+    }
 }

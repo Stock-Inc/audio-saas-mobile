@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.alnoer.audiosaas.core.designsystem.component.AudioButton
+import dev.alnoer.audiosaas.core.designsystem.component.AudioRecordingSourceButton
 import dev.alnoer.audiosaas.core.designsystem.component.AudioCard
 import dev.alnoer.audiosaas.core.designsystem.component.AudioDestination
 import dev.alnoer.audiosaas.core.designsystem.component.AudioIcon
@@ -38,6 +37,7 @@ fun OverviewScreen(
     onDestinationSelected: (AudioDestination) -> Unit,
     onRecordingSelected: () -> Unit,
     onNewRecording: () -> Unit,
+    onRecordVoice: () -> Unit,
     onViewAll: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -53,18 +53,10 @@ fun OverviewScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             AudioPageTitle("Обзор")
-            AudioButton(
-                text = "Новая запись",
-                onClick = onNewRecording,
+            AudioRecordingSourceButton(
+                onChooseFile = onNewRecording,
+                onRecordVoice = onRecordVoice,
                 modifier = Modifier.fillMaxWidth(),
-                leadingIcon = {
-                    AudioIcon(
-                        asset = AudioIconAsset.Add,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                    )
-                },
             )
             MonthlySummary()
             Row(
@@ -187,6 +179,7 @@ private fun OverviewScreenPreview() {
                 onDestinationSelected = {},
                 onRecordingSelected = {},
                 onNewRecording = {},
+                onRecordVoice = {},
                 onViewAll = {},
             )
         }

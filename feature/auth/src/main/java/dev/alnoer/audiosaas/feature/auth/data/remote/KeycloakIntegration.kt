@@ -20,6 +20,10 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 interface KeycloakIntegration {
     fun processResult(
@@ -27,7 +31,7 @@ interface KeycloakIntegration {
         onResult: (KeycloakAuthResult) -> Unit,
     )
 
-    fun getLoginIntent(): Intent?
+    suspend fun getLoginIntent(): Intent?
 }
 
 sealed interface KeycloakAuthResult {
@@ -41,10 +45,30 @@ class KeycloakIntegrationImpl @Inject constructor(
 ): KeycloakIntegration {
     private val keycloakBaseUrl = BuildConfig.KEYCLOAK_BASE_URL.trimEnd('/')
 
-    private val serviceConfiguration = AuthorizationServiceConfiguration(
-        "$keycloakBaseUrl/protocol/openid-connect/auth".toUri(),
-        "$keycloakBaseUrl/protocol/openid-connect/token".toUri(),
-    )
+    private suspend fun fetchConfiguration(): AuthorizationServiceConfiguration =
+        suspendCancellableCoroutine { continuation ->
+            AuthorizationServiceConfiguration.fetchFromIssuer(
+                keycloakBaseUrl.toUri(),
+                { configuration, error ->
+                    if (continuation.isActive) {
+                        if (configuration != null) {
+                            if (configuration.discoveryDoc?.issuer != keycloakBaseUrl) {
+                                continuation.resumeWithException(
+                                    IllegalStateException("Keycloak discovery issuer differs from KEYCLOAK_BASE_URL"),
+                                )
+                            } else {
+                                continuation.resume(configuration)
+                            }
+                        } else {
+                            continuation.resumeWithException(
+                                error ?: IllegalStateException("Keycloak discovery is unavailable"),
+                            )
+                        }
+                    }
+                },
+                connectionBuilder,
+            )
+        }
 
     private val redirectUri = BuildConfig.OAUTH_REDIRECT_URI.toUri()
 
@@ -97,7 +121,7 @@ class KeycloakIntegrationImpl @Inject constructor(
 
                 onResult(
                     KeycloakAuthResult.Failure(
-                        tokenError.message ?: "Token exchange failed",
+                        tokenExchangeFailureMessage(tokenError.cause?.message),
                     ),
                 )
                 return@performTokenRequest
@@ -146,10 +170,10 @@ class KeycloakIntegrationImpl @Inject constructor(
         }
     }
 
-    override fun getLoginIntent(): Intent? {
+    override suspend fun getLoginIntent(): Intent? {
         try {
             val request = AuthorizationRequest.Builder(
-                serviceConfiguration,
+                fetchConfiguration(),
                 BuildConfig.KEYCLOAK_CLIENT_ID,
                 ResponseTypeValues.CODE,
                 redirectUri
@@ -160,6 +184,8 @@ class KeycloakIntegrationImpl @Inject constructor(
             val intent = authService.getAuthorizationRequestIntent(request)
 
             return intent
+        } catch (exception: CancellationException) {
+            throw exception
         } catch (e: Exception) {
             Log.e("AUTH", "Cannot create login intent", e)
             return null

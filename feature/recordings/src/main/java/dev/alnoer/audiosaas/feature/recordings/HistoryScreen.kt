@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import dev.alnoer.audiosaas.core.designsystem.component.AudioButton
+import dev.alnoer.audiosaas.core.designsystem.component.AudioRecordingSourceButton
 import dev.alnoer.audiosaas.core.designsystem.component.AudioDestination
 import dev.alnoer.audiosaas.core.designsystem.component.AudioFilterChip
 import dev.alnoer.audiosaas.core.designsystem.component.AudioIcon
@@ -40,6 +40,7 @@ fun HistoryScreen(
     onDestinationSelected: (AudioDestination) -> Unit,
     onRecordingSelected: () -> Unit,
     onNewRecording: () -> Unit,
+    onRecordVoice: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var search by remember { mutableStateOf("") }
@@ -61,18 +62,10 @@ fun HistoryScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             AudioPageTitle("История распознаваний")
-            AudioButton(
-                text = "Новая запись",
-                onClick = onNewRecording,
+            AudioRecordingSourceButton(
+                onChooseFile = onNewRecording,
+                onRecordVoice = onRecordVoice,
                 modifier = Modifier.fillMaxWidth(),
-                leadingIcon = {
-                    AudioIcon(
-                        asset = AudioIconAsset.Add,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                    )
-                },
             )
             AudioTextField(
                 value = search,
@@ -139,6 +132,7 @@ private fun HistoryScreenPreview() {
                 onDestinationSelected = {},
                 onRecordingSelected = {},
                 onNewRecording = {},
+                onRecordVoice = {},
             )
         }
     }

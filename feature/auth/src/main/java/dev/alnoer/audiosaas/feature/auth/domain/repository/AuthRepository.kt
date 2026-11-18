@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.StateFlow
 interface AuthRepository {
     val authState: StateFlow<AuthState>
     fun onAuthResult(intent: Intent)
-    fun getLoginIntent(): Intent?
+    suspend fun getLoginIntent(): Intent?
 }
