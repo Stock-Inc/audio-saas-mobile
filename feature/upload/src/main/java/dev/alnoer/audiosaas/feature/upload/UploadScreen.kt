@@ -2,9 +2,11 @@ package dev.alnoer.audiosaas.feature.upload
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.IconButton
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,9 +18,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -44,6 +49,14 @@ fun UploadRoute(
         ActivityResultContracts.OpenDocument(),
     ) { uri ->
         if (uri != null) viewModel.upload(uri)
+    }
+
+    var pickerOpened by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (!pickerOpened) {
+            pickerOpened = true
+            documentLauncher.launch(arrayOf("*/*"))
+        }
     }
 
     UploadScreen(
@@ -72,25 +85,20 @@ fun UploadScreen(
             title = "Новая запись",
             showBrand = false,
             navigationIcon = {
-                AudioIcon(
-                    asset = AudioIconAsset.ArrowLeft,
-                    contentDescription = "Назад",
-                    modifier = Modifier
-                        .size(16.dp)
-                        .clickable(
-                            enabled = !uploading,
-                            role = Role.Button,
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = onBack,
-                        ),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
+                IconButton(onClick = onBack, enabled = !uploading) {
+                    AudioIcon(
+                        asset = AudioIconAsset.ArrowLeft,
+                        contentDescription = "Назад",
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
             },
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -104,9 +112,26 @@ fun UploadScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
                 ) {
+                    AudioIcon(
+                        asset = AudioIconAsset.Folder,
+                        contentDescription = null,
+                        modifier = Modifier.padding(top = 8.dp).size(40.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    Text(
+                        text = when (uiState) {
+                            UploadUiState.Idle -> "АУДИО ИЛИ ВИДЕО"
+                            UploadUiState.Uploading -> "ЗАГРУЗКА"
+                            UploadUiState.Success -> "ЗАГРУЖЕНО"
+                            is UploadUiState.Failure -> "НЕ УДАЛОСЬ ЗАГРУЗИТЬ"
+                        },
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.audioColors.mutedForeground,
+                    )
                     when (uiState) {
                         UploadUiState.Idle -> StatusText("Файл ещё не выбран")
                         UploadUiState.Uploading -> {
@@ -139,6 +164,7 @@ fun UploadScreen(
                             AudioButtonStyle.Primary
                         },
                         enabled = !uploading,
+                        height = 48.dp,
                     )
                 }
             }

@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import dev.alnoer.audiosaas.feature.upload.VoiceRecordingRoute
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +45,7 @@ private object AppRoute {
     const val FOLDERS = "folders"
     const val RESULT = "result"
     const val UPLOAD = "upload"
+    const val RECORD = "record"
 }
 
 internal data class AppStartupState(
@@ -191,6 +193,7 @@ fun AudioSaaSNavigation(modifier: Modifier = Modifier) {
                 onDestinationSelected = ::selectDestination,
                 onRecordingSelected = { navController.navigate(AppRoute.RESULT) },
                 onNewRecording = { navController.navigate(AppRoute.UPLOAD) },
+                onRecordVoice = { navController.navigate(AppRoute.RECORD) },
                 onViewAll = { navController.navigate(AppRoute.HISTORY) },
                 modifier = Modifier,
             )
@@ -200,6 +203,7 @@ fun AudioSaaSNavigation(modifier: Modifier = Modifier) {
                 onDestinationSelected = ::selectDestination,
                 onRecordingSelected = { navController.navigate(AppRoute.RESULT) },
                 onNewRecording = { navController.navigate(AppRoute.UPLOAD) },
+                onRecordVoice = { navController.navigate(AppRoute.RECORD) },
                 modifier = Modifier,
             )
         }
@@ -208,6 +212,9 @@ fun AudioSaaSNavigation(modifier: Modifier = Modifier) {
                 onDestinationSelected = ::selectDestination,
                 modifier = Modifier,
             )
+        }
+        composable(AppRoute.RECORD) {
+            VoiceRecordingRoute(onBack = { navController.popBackStack() })
         }
         composable(AppRoute.UPLOAD) {
             UploadRoute(

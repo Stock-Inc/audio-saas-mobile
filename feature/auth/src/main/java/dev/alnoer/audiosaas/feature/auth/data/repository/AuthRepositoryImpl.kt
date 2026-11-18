@@ -48,5 +48,5 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getLoginIntent(): Intent? = keycloakIntegration.getLoginIntent()
+    override suspend fun getLoginIntent(): Intent? = keycloakIntegration.getLoginIntent()
 }

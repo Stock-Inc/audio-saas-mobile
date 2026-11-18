@@ -12,6 +12,6 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
     val authState = authRepository.authState
 
-    fun getLoginIntent() = authRepository.getLoginIntent()
+    suspend fun getLoginIntent() = authRepository.getLoginIntent()
     fun processAuthResult(intent: Intent) = authRepository.onAuthResult(intent)
 }
